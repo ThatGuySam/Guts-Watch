@@ -24,11 +24,27 @@
  * Text Domain:       guts-watch
  * Domain Path:       /languages
  */
+ 
+
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
+
+
+//https://getcomposer.org/doc/01-basic-usage.md
+require __DIR__ . '/vendor/autoload.php';
+
+
+
+/*
+$log = new Monolog\Logger('name');
+$log->pushHandler(new Monolog\Handler\StreamHandler('app.log', Monolog\Logger::WARNING));
+$log->addWarning('Foo');
+*/
+
+
 
 /**
  * The code that runs during plugin activation.
