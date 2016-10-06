@@ -170,6 +170,7 @@ class Guts_Watch_Public {
 			wp_print_scripts('jquery-migrate-cdn');
 			wp_print_scripts('froogaloop');
 			wp_print_scripts('hashchange');
+			wp_print_scripts('slick');
 			
 			wp_print_scripts('watch_js');
 			
@@ -181,7 +182,156 @@ class Guts_Watch_Public {
 		?>
 			
 			<script type="text/javascript">
-				
+				if ( undefined !== window.jQuery ) { jQuery(function ($) { 'use strict';
+					
+					//gc Check
+					if( window.gc === undefined ){ window.gc = {};}
+					
+					gc.watchInit = function( $frame ) {
+						
+						//Check if frame exists
+						if( $frame === 'undefined' ){ return false; }
+						
+						var field = 'vid';
+						var vid;
+						var videoTitle;
+						
+						var iframe = $frame[0];
+						
+						
+						
+						
+						
+						// Vimeo Player API
+						console.log(iframe);
+					    var player = $f(iframe);
+					    var status = $('.status');
+					    var gcID = $('#frame').data("gc-id");
+					    var $foreground = $(".hero-shortcode .hero-foreground");
+					    var $menu = $("header.banner");
+					    var lastTimeMouseMoved = "";
+					    var mouseTimeout = "";
+					    var vimeoPlaying = 0;
+					    
+					    
+					    $("html").addClass("vimeo-paused")
+					
+					    // When the player is ready, add listeners for pause, finish, and playProgress
+					    player.addEvent('ready', function() {
+					        console.log('vimeo api ready');
+					        
+					        player.addEvent('pause', onPause);
+					        player.addEvent('play', onPlay);
+					        //player.addEvent('playProgress', onPlayProgress);
+					    });
+					
+					    function onPause(id) {
+					        console.log('paused');
+					        $("html").removeClass("vimeo-playing").addClass("vimeo-paused");
+					        vimeoPlaying = 0;
+					    }
+					    
+					    function onPlay(id) {
+					        console.log('played');
+					        $("html").removeClass("vimeo-paused").addClass("vimeo-playing");
+					        vimeoPlaying = 1;
+					    }
+					    
+					    $("html").addClass("watch-page");
+						
+						$foreground.click(function(){
+							if( vimeoPlaying ){
+								player.api("pause");
+							} else {
+								player.api("play");
+							}
+						});
+						
+						
+						//Wake Up Video on Mouse action
+						$(document).bind("mousemove onmousemove onmousedown mousedown onclick click scroll DOMMouseScroll mousewheel keyup", function(){
+							
+							//console.log("Wake Up!");
+							
+							$("html").removeClass("clean-hero");
+							$foreground.addClass("disable-hover");
+							
+							lastTimeMouseMoved = new Date().getTime();
+							
+							$menu.hover(function(){
+								clearTimeout(mouseTimeout);
+							});
+							
+							mouseTimeout=setTimeout(function(){
+								var currentTime = new Date().getTime();
+								if(currentTime - lastTimeMouseMoved > 1000){
+									$("html").addClass("clean-hero");
+									$foreground.removeClass("disable-hover");
+								}
+							},2000);
+						});
+						
+						window.uid = "<?php if(isset($guts_id)) echo $guts_id; ?>";
+					
+						function getParameterByName(name) {
+						  name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+						  var regexS = "[\\?&]" + name + "=([^&#]*)";
+						  var regex = new RegExp(regexS);
+						  var results = regex.exec(window.location.search);
+						  if(results == null)
+						    return "";
+						  else
+					      return decodeURIComponent(results[1].replace(/\+/g, " "));
+						}
+						
+						function loadVideo(id) {
+							
+					    	$("#frame").attr('src', 'https://player.vimeo.com/video/' + id + '?byline=0&portrait=0&badge=0&color=d8d8d8&autoplay=1' );
+							
+							gc.scrollTo( $("#frame").offset().top - 57 );
+						}
+						
+					/*
+						if( window.location.href.indexOf('?' + field + '=') != -1 && uid == "955350") {
+							$(document).ready(function() {
+							window.vid = getParameterByName('vid')
+							var vid = window.vid;
+								loadVideo(vid);
+							});
+						}
+					*/
+						
+						//Load Video from Hash
+						if(window.location.hash !== "") {
+							
+							var vid = window.location.hash.split('#')[1]
+							window.vid = vid;
+							
+							$.getJSON('https://vimeo.com/api/v2/video/'+vid+'.json', {format: 'json'}, function(data) {
+							    window.uid = data[0].user_id;
+							})
+							.done(function() {
+								if( window.uid == gcID){
+									loadVideo(vid);
+								}
+							});
+							
+						}
+					
+						//Load Video from Hash Changing(click)
+						$(window).hashchange(function () {
+							var hash = window.location.hash.split('#')[1]
+							loadVideo(hash);
+						});
+						
+						
+					}
+					
+					
+					gc.watchInit( $("#frame") );
+					
+	
+				}); };//End jQuery
 			</script>
 			
 			<style>

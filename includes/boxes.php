@@ -599,8 +599,9 @@ class Boxes {
 		
 		//JS
 		wp_register_script( 'slick', 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js', null, '1.6.0', true);
-		
 		if( !wp_script_is( 'modernizr', 'registered' ) ) wp_register_script( 'modernizr', 'https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js', null, '2.8.3', true);
+		
+		wp_register_script( 'watch_js', plugin_dir_url( __FILE__ ) . 'js/watch.js', array('jquery', 'modernizr', 'slick'), '1.0.0', true);
 
 		
 	}
@@ -615,6 +616,8 @@ class Boxes {
 			
 			wp_print_scripts('slick');
 			wp_print_scripts('modernizr');
+			
+			wp_print_scripts('watch_js');
 	}
 	
 	static function internal_script() {

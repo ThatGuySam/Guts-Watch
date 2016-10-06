@@ -46,9 +46,11 @@ $log->addWarning('Foo');
 
 use phpFastCache\CacheManager;
 
+$upload_dir = wp_upload_dir();
+
 // Setup File Path on your config files
 CacheManager::setDefaultConfig(array(
-    "path" => './cache/', // or in windows "C:/tmp/"
+    "path" => $upload_dir['basedir'].'/watch_cache/', // or in windows "C:/tmp/"
 ));
 
 // In your class, function, you can call the Cache
