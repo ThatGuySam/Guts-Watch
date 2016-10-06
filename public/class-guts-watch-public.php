@@ -167,7 +167,7 @@ class Guts_Watch_Public {
 			wp_print_styles('slick_theme_css');
 			
 			//JS
-			wp_print_scripts('jquery-migrate-cdn');
+			//wp_print_scripts('jquery-migrate-cdn');
 			wp_print_scripts('froogaloop');
 			wp_print_scripts('hashchange');
 			wp_print_scripts('slick');

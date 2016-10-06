@@ -614,7 +614,7 @@ class Boxes {
 			wp_print_styles('slick_theme_css');
 			
 			
-			wp_print_scripts('slick');
+			//wp_print_scripts('slick');
 			wp_print_scripts('modernizr');
 			
 			wp_print_scripts('watch_js');
