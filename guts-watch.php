@@ -44,6 +44,16 @@ $log->pushHandler(new Monolog\Handler\StreamHandler('app.log', Monolog\Logger::W
 $log->addWarning('Foo');
 */
 
+use phpFastCache\CacheManager;
+
+// Setup File Path on your config files
+CacheManager::setDefaultConfig(array(
+    "path" => './cache/', // or in windows "C:/tmp/"
+));
+
+// In your class, function, you can call the Cache
+global $InstanceCache;
+$InstanceCache = CacheManager::getInstance('files');
 
 
 /**

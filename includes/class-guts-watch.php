@@ -101,6 +101,16 @@ class Guts_Watch {
 		 * core plugin.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-guts-watch-loader.php';
+		
+		/**
+		 * Guts function Helpers
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/helpers.php';
+		
+		/**
+		 * Guts boxes
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/boxes.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
@@ -112,6 +122,7 @@ class Guts_Watch {
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-guts-watch-admin.php';
+		
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
@@ -166,6 +177,8 @@ class Guts_Watch {
 	private function define_public_hooks() {
 
 		$plugin_public = new Guts_Watch_Public( $this->get_plugin_name(), $this->get_version() );
+		
+		$plugin_public->init();
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );

@@ -53,6 +53,164 @@ class Guts_Watch_Public {
 		$this->version = $version;
 
 	}
+	
+	
+	
+	
+/*
+	
+	Shortcode Code
+	
+*/
+
+
+
+
+	
+	static $add_watch_script;
+ 
+	static function init() {
+		add_shortcode('watch', array(__CLASS__, 'handle_shortcode'));
+		add_action('init', array(__CLASS__, 'register_script'), 110);
+		add_action('wp_footer', array(__CLASS__, 'print_script'), 110);
+		add_action('wp_footer', array(__CLASS__, 'internal_script'), 110);
+	}
+	
+	static function handle_shortcode($atts) {
+		self::$add_watch_script = true;
+		
+		extract( shortcode_atts( array(
+			'class' => false,
+		), $atts, 'watch' ) );
+		
+		
+		$video = new stdClass();
+		
+		$parameters = new stdClass();
+			$parameters->title = 0;
+			$parameters->byline = 0;
+			$parameters->portrait = 0;
+			$parameters->color = "ffffff";
+			$parameters->api = 1;
+			$parameters->player_id = 'frame';
+		
+		
+		if ( isset($_GET['vid']) ) {
+			
+			$video->id = $_GET['vid'];
+			
+			$videos = new stdClass();
+			
+			$videos = boxVimeo( $video );
+			
+			$video = (object) array_merge((array) $video, (array) $videos->video_0[0]);
+			
+			$x = 0;
+			
+			//debug( $video->user_id );
+			
+			$parameters->autoplay = 1;
+		}
+		
+		$guts_id = "955350";
+		
+		//Check id is set and belongs to guts
+		if( !isset($_GET['vid']) || $video->user_id != $guts_id) {
+			$video->id = getLatestVideoID();
+		}
+		
+		$video->query = http_build_query($parameters);
+		
+		ob_start(); ?>
+			
+			<div class="hero-background">
+				<div class="ir frame-container">
+					<iframe id="frame" src="//player.vimeo.com/video/<?php echo $video->id; ?>?<?php echo $video->query; ?>" data-gc-id="<?php echo $guts_id; ?>" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen ></iframe>
+				</div>
+			</div>
+			
+		<?php
+		$content = ob_get_clean();
+			
+		return $content;
+	}
+	
+	
+	
+	static function register_script() {
+		
+		//CSS
+		wp_register_style( 'slick_css', 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css' , null, '1.6.0', 'screen' );
+		wp_register_style( 'slick_theme_css', 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css' , null, '1.6.0', 'screen' );
+		wp_register_style( 'watch_css', plugin_dir_url( __FILE__ ) . 'css/watch.css' , array(), '1.0.1', 'screen' );
+		
+		//JS
+		wp_register_script( 'hashchange', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-hashchange/v1.3/jquery.ba-hashchange.min.js', array('jquery'), '1.3', true);
+		wp_register_script( 'jquery-migrate-cdn', 'https://code.jquery.com/jquery-migrate-1.2.1.min.js', array('jquery'), '1.2.1', true);
+		wp_register_script( 'froogaloop2', 'https://f.vimeocdn.com/js/froogaloop2.min.js', array('jquery'), '2.0', true);
+		wp_register_script( 'slick', 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js', null, '1.6.0', true);
+		
+		if( !wp_script_is( 'modernizr', 'registered' ) ) wp_register_script( 'modernizr', 'https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js', null, '2.8.3', true);
+		
+		wp_register_script( 'watch_js', plugin_dir_url( __FILE__ ) . 'js/watch.js', array('jquery', 'modernizr', 'slick'), '1.0.0', true);
+		
+	}
+ 
+	static function print_script() {
+		if ( ! self::$add_watch_script )
+			return;
+			
+			//CSS
+			//if( wp_style_is( 'js_composer_front', 'registered' ) ) wp_print_styles('js_composer_front');
+			wp_print_styles('watch_css');
+			wp_print_styles('slick_css');
+			wp_print_styles('slick_theme_css');
+			
+			//JS
+			wp_print_scripts('jquery-migrate-cdn');
+			wp_print_scripts('froogaloop');
+			wp_print_scripts('hashchange');
+			
+			wp_print_scripts('watch_js');
+			
+	}
+	
+	static function internal_script() {
+		if ( ! self::$add_watch_script )
+			return;			
+		?>
+			
+			<script type="text/javascript">
+				
+			</script>
+			
+			<style>
+				
+				.hero-background {
+					z-index: 0;
+				}
+				
+				.hero-shortcode .hero-foreground {
+					position: absolute;
+					z-index: 1;
+				}
+				
+				.frame-container {
+				}
+				
+				#frame {
+				}
+				
+			</style>
+		<?php
+	}
+	
+	
+	//init();
+	
+	
+	
+	
 
 	/**
 	 * Register the stylesheets for the public-facing side of the site.
