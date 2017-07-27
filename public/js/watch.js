@@ -238,6 +238,7 @@ if ( undefined !== window.jQuery ) {
 	
 	
 	//Slider Boxes
+	
 	function slickize($boxesContainer){
 			
 		var $frame = $boxesContainer.find('.frame'); window.frr = $frame;
@@ -362,26 +363,33 @@ if ( undefined !== window.jQuery ) {
 		//var slidesToShow = $list.data("show");
 	}
 	
+	gc.boxize = function() {
+		
+		//Check if there are any boxes to boxize
+		if( $( '.box-boxes' ).length === 0 ){ return false; }
+		
+		//Let's make som slides
+		$('.box-boxes').each(function() {
+			
+			//$boxesContainer
+			var $this = $(this);
+			
+			if( $this.hasClass('boxes-slick') ){
+				slickize( $this );
+			} else if( $this.hasClass('boxes-masonry') ){
+				masonize( $this );
+			}
+			
+			if( $(this).hasClass("double-stacked") ){
+				//sizeFirstBox( $(this) );
+				console.log("Has Double");
+			}
+			
+		});
+		
+	}
 	
-	
-	//Let's make som slides
-	$('.box-boxes').each(function() {
-		
-		//$boxesContainer
-		var $this = $(this);
-		
-		if( $this.hasClass('boxes-slick') ){
-			slickize( $this );
-		} else if( $this.hasClass('boxes-masonry') ){
-			masonize( $this );
-		}
-		
-		if( $(this).hasClass("double-stacked") ){
-			//sizeFirstBox( $(this) );
-			console.log("Has Double");
-		}
-		
-	});
+	gc.boxize();
 
 	
 	if( !Modernizr.cssanimations ){

@@ -152,7 +152,7 @@ class Guts_Watch_Public {
 		
 		if( !wp_script_is( 'modernizr', 'registered' ) ) wp_register_script( 'modernizr', 'https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js', null, '2.8.3', true);
 		
-		wp_register_script( 'watch_js', plugin_dir_url( __FILE__ ) . 'js/watch.js', array('jquery', 'modernizr', 'slick'), '1.0.0', true);
+		wp_register_script( 'watch_js', plugin_dir_url( __FILE__ ) . 'js/watch.js', array('jquery', 'modernizr', 'slick'), '1.0.1', true);
 		
 	}
  
@@ -167,7 +167,6 @@ class Guts_Watch_Public {
 			wp_print_styles('slick_theme_css');
 			
 			//JS
-			//wp_print_scripts('jquery-migrate-cdn');
 			wp_print_scripts('froogaloop');
 			wp_print_scripts('hashchange');
 			wp_print_scripts('slick');
@@ -190,16 +189,14 @@ class Guts_Watch_Public {
 					gc.watchInit = function( $frame ) {
 						
 						//Check if frame exists
-						if( $frame === 'undefined' ){ return false; }
+						if( $frame === 'undefined' || $f === 'undefined' ){ return false; }
+						
 						
 						var field = 'vid';
 						var vid;
 						var videoTitle;
 						
 						var iframe = $frame[0];
-						
-						
-						
 						
 						
 						// Vimeo Player API
